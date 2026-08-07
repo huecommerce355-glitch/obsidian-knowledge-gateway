@@ -5,7 +5,7 @@ from pathlib import Path
 from knowledge_write import resolve_vault_path, _paths
 from knowledge_read import _parse
 
-INDEX_FIELDS = ("path", "title", "type", "project_id", "tags", "status", "date")
+INDEX_FIELDS = ("path", "title", "type", "project_id", "tags", "status", "date", "trace_id")
 
 
 def _load_index(root):

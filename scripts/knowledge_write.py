@@ -30,7 +30,10 @@ def _paths(vault):
 
 def _frontmatter(meta):
     lines = ["---"]
-    for key in ("title", "type", "project_id", "date", "status", "tags", "created_by"):
+    keys = ("title", "type", "project_id", "date", "status", "tags", "created_by")
+    if meta.get("trace_id"):
+        keys += ("trace_id",)
+    for key in keys:
         value = meta.get(key, [] if key == "tags" else "")
         if isinstance(value, list):
             lines.append(key + ": [" + ", ".join(json.dumps(str(x), ensure_ascii=False) for x in value) + "]")
@@ -71,7 +74,7 @@ def _update_index(root, entry):
     os.chmod(path, 0o600)
     return {"ok": True}
 
-def write_knowledge(doc_type, title, content, project_id="", status="active", tags=None, vault_path=None, overwrite=False, **kwargs):
+def write_knowledge(doc_type, title, content, project_id="", status="active", tags=None, vault_path=None, overwrite=False, trace_id=None, **kwargs):
     if doc_type not in DOC_TYPES: return {"ok": False, "error_code": ERRORS["doc_type"], "message": "invalid doc_type"}
     if not title or content is None: return {"ok": False, "error_code": ERRORS["required"], "message": "title and content are required"}
     from safety_filter import check
@@ -93,9 +96,13 @@ def write_knowledge(doc_type, title, content, project_id="", status="active", ta
     directory.mkdir(parents=True, exist_ok=True)
     os.chmod(directory, 0o750)
     meta = {"title": title, "type": doc_type, "project_id": project_id, "date": today, "status": status, "tags": tags or [], "created_by": "obsidian-knowledge-gateway"}
+    if trace_id:
+        meta["trace_id"] = trace_id
     path.write_text(_frontmatter(meta) + _body(doc_type, content), encoding="utf-8")
     os.chmod(path, 0o640)
-    entry = {"path": str(path.relative_to(root)), "title": title, "type": doc_type, "project_id": project_id, "tags": tags or [], "date": today}
+    entry = {"path": str(path.relative_to(root)), "title": title, "type": doc_type, "project_id": project_id, "status": status, "tags": tags or [], "date": today}
+    if trace_id:
+        entry["trace_id"] = trace_id
     indexed = _update_index(root, entry)
     if not indexed["ok"]: return indexed
     return {"ok": True, "document": {"path": str(path), "frontmatter": meta}}
