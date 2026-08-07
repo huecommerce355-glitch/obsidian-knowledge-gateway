@@ -1,7 +1,7 @@
 ---
 name: obsidian-knowledge-gateway
 description: Use for safe HACP v1.0 long-term knowledge write/read/search in an Obsidian Vault, including memory, decisions, execution summaries, and index maintenance.
-version: 1.0.0
+version: 1.1.0
 author: Hermes Agent
 license: MIT
 platforms: [macos, linux]
@@ -11,7 +11,7 @@ metadata:
     related_skills: [coding-agent-gateway, github-development-gateway]
 ---
 
-# Obsidian Knowledge Gateway v1.0
+# Obsidian Knowledge Gateway v1.1
 
 ## Overview
 
@@ -31,6 +31,15 @@ metadata:
 Hermes → obsidian-knowledge-gateway → Obsidian Vault
                          └── AI-Vault/ + .knowledge-index.yaml
 ```
+
+## Metadata Index
+
+`.knowledge-index.yaml` is a JSON-compatible YAML file containing `last_indexed` and
+`documents`. Each document entry contains `path`, `title`, `type`, `project_id`,
+`tags`, `status`, and `date`. `knowledge_search.py` supports exact metadata filters
+`--tag`, `--status`, and `--project`; filters can be combined. Without filters,
+search retains the v1.0 full-text and scope behavior. See
+`references/metadata_index.md` for the v1.1 schema and the v1.2 semantic-search boundary.
 
 路径优先使用存在的 `OBSIDIAN_VAULT_PATH`，否则 `~/Documents/Obsidian Vault`。写入管线固定为 `safety_filter.check(content) → write → incremental index`。默认 read 只返回 path/frontmatter/summary；`full:true` 才返回 body。execution-report/test-result 丢弃 raw stdout/stderr/full diff，仅保留 Summary、Metrics、Artifacts。
 
