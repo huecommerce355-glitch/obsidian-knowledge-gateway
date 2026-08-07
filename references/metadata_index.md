@@ -1,4 +1,4 @@
-# Metadata Index v1.1
+# Metadata Index v1.2
 
 `.knowledge-index.yaml` 位于 `AI-Vault/` 根目录。虽然扩展名为 YAML，当前实现
 写入 JSON-compatible YAML，以便不引入额外解析依赖。
@@ -14,6 +14,8 @@
 - `tags`: 标签字符串数组。
 - `status`: 文档状态字符串，写入时必有该字段。
 - `date`: 文档写入日期，格式为 `YYYY-MM-DD`。
+- `trace_id`: 可选的 Trace Context 标识。仅当写入请求提供非空 `trace_id` 时写入
+  frontmatter 和索引 entry；旧文档和旧索引 entry 可以缺少该字段。
 
 ## Filtering semantics
 
