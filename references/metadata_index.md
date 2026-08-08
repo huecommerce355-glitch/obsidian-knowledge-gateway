@@ -9,13 +9,21 @@
 - `documents`: 文档 entry 数组。
 - `path`: 相对于 `AI-Vault/` 的 Markdown 路径。
 - `title`: 文档标题。
-- `type`: 六种受支持的知识文档类型之一。
+- `type`: 七种受支持的知识文档类型之一；v1.3 新增 `review-result`。
 - `project_id`: 所属项目标识，可为空字符串。
 - `tags`: 标签字符串数组。
 - `status`: 文档状态字符串，写入时必有该字段。
 - `date`: 文档写入日期，格式为 `YYYY-MM-DD`。
 - `trace_id`: 可选的 Trace Context 标识。仅当写入请求提供非空 `trace_id` 时写入
   frontmatter 和索引 entry；旧文档和旧索引 entry 可以缺少该字段。
+
+## v1.3 review-result schema
+
+`review-result` entry 位于 `Reviews/`，除通用字段外必须包含
+`review_id`、`task_id`、`trace_id`、`execution_agent`、`review_agent`、`review_mode`、
+`decision`（`PASS`、`CONDITIONAL` 或 `FAIL`）和 `score`。`--doc-type review-result`、
+`--project`、`--agent`（匹配 execution_agent 或 review_agent）和 `--decision` 支持精确
+过滤；旧 entry 缺少这些字段时按空值处理，不会导致搜索失败。
 
 ## Filtering semantics
 

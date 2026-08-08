@@ -1,7 +1,7 @@
 ---
 name: obsidian-knowledge-gateway
 description: Use for safe HACP v1.0 long-term knowledge write/read/search in an Obsidian Vault, including memory, decisions, execution summaries, and index maintenance.
-version: 1.2.0
+version: 1.3.0
 author: Hermes Agent
 license: MIT
 platforms: [macos, linux]
@@ -11,11 +11,11 @@ metadata:
     related_skills: [coding-agent-gateway, github-development-gateway]
 ---
 
-# Obsidian Knowledge Gateway v1.2
+# Obsidian Knowledge Gateway v1.3
 
 ## Overview
 
-基础设施层 Gateway，为 Hermes 提供长期知识记忆层，连接 Orchestrator 与 Obsidian Vault。协议为 HACP v1.0，消息前缀为 `kng.`。六类文档是 `execution-report`、`agent-result`、`test-result`、`decision-record`、`project-context`、`lesson`。
+基础设施层 Gateway，为 Hermes 提供长期知识记忆层，连接 Orchestrator 与 Obsidian Vault。协议为 HACP v1.0，消息前缀为 `kng.`。文档类型包括 `execution-report`、`agent-result`、`test-result`、`decision-record`、`project-context`、`lesson` 和 `review-result`。
 
 ## When to Use
 
@@ -48,6 +48,14 @@ frontmatter 和 `.knowledge-index.yaml` 对应 entry。`knowledge_read.py` 会�
 中的 `trace_id`；读取没有该字段的旧文档或旧索引 entry 保持兼容，不会报错。
 
 路径优先使用存在的 `OBSIDIAN_VAULT_PATH`，否则 `~/Documents/Obsidian Vault`。写入管线固定为 `safety_filter.check(content) → write → incremental index`。默认 read 只返回 path/frontmatter/summary；`full:true` 才返回 body。execution-report/test-result 丢弃 raw stdout/stderr/full diff，仅保留 Summary、Metrics、Artifacts。
+
+## Review Result
+
+`review-result` 写入 `AI-Vault/Reviews/<date>-<task_id>-review.md`。frontmatter 除既有
+`title/type/project_id/date/status/tags` 外，必须包含 `review_id`、`task_id`、`trace_id`、
+`execution_agent`、`review_agent`、`review_mode`、`decision`、`score`。正文只允许
+`summary`、`scores`、`findings` 以及必要的摘要化 `blockers`；禁止 raw diff、完整代码或
+Agent 长输出，写入管线仍经过 `safety_filter`。
 
 ## Error Codes
 
