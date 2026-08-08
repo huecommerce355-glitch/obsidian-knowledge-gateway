@@ -1,6 +1,6 @@
 """Validate HACP v1.0 KNG task envelopes; Python 3.9+, stdlib only."""
 import argparse, json, sys
-DOC_TYPES = {"execution-report", "agent-result", "test-result", "decision-record", "project-context", "lesson"}
+DOC_TYPES = {"execution-report", "agent-result", "test-result", "decision-record", "project-context", "lesson", "review-result"}
 OPS = {"kng.write", "kng.read", "kng.search"}
 FIELDS = ("protocol", "message_id", "timestamp", "type", "source", "target", "payload", "ttl_seconds")
 def validate_task(data):
